@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <!-- 纯黑背景 -->
+  <rect width="400" height="400" fill="#000000"/>
+  
+  <!-- 行号分隔线 -->
+  <line x1="70" y1="40" x2="70" y2="360" stroke="#333333" stroke-width="2"/>
+  
+  <!-- 行号 -->
+  <text x="45" y="150" font-family="monospace" font-size="20" fill="#555555" text-anchor="end">1</text>
+  <text x="45" y="210" font-family="monospace" font-size="20" fill="#555555" text-anchor="end">2</text>
+  <text x="45" y="270" font-family="monospace" font-size="20" fill="#555555" text-anchor="end">3</text>
+
+  <!-- 代码内容 -->
+  <!-- 第1行: 初始化 -->
+  <text x="100" y="150" font-family="Courier New, monospace" font-size="20" fill="#888888">
+    <tspan fill="#FFFFFF">const</tspan> dev = <tspan fill="#FFFFFF">new</tspan> Developer();
+  </text>
+  
+  <!-- 第2行: 主Logo名称 -->
+  <text x="100" y="210" font-family="Courier New, monospace" font-size="48" font-weight="bold" fill="#FFFFFF">
+    &gt; PAUL_
+  </text>
+  
+  <!-- 第3行: 注释 -->
+  <text x="100" y="270" font-family="Courier New, monospace" font-size="20" fill="#666666">
+    // Software Engineer
+  </text>
+
+  <!-- 边框装饰 (可选的方形边框) -->
+  <rect x="10" y="10" width="380" height="380" fill="none" stroke="#222222" stroke-width="2"/>
+</svg>
