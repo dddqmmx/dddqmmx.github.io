@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 
 type SnapPage = {
   locked: boolean
@@ -7,6 +7,7 @@ type SnapPage = {
 
 const snapWrap = ref<HTMLElement | null>(null)
 const currentIndex = ref(0)
+const isPcLayout = ref(true)
 const snapPages = ref<SnapPage[]>([
   { locked: false },
   { locked: false },
@@ -16,7 +17,8 @@ const snapPages = ref<SnapPage[]>([
 const currentPage = computed(() => snapPages.value[currentIndex.value])
 
 let isSnapping = false
-let touchStartY = 0
+let snapTimer = 0
+let layoutQuery: MediaQueryList | null = null
 
 function getSnapItems() {
   return Array.from(snapWrap.value?.querySelectorAll<HTMLElement>('.snapItem') ?? [])
@@ -50,17 +52,18 @@ function snapTo(index: number) {
   isSnapping = true
   currentIndex.value = index
   target.scrollIntoView({ block: 'start', behavior: 'smooth' })
-  window.setTimeout(() => {
+  window.clearTimeout(snapTimer)
+  snapTimer = window.setTimeout(() => {
     isSnapping = false
   }, 520)
 }
 
 function requestSnap(direction: 1 | -1, event?: Event) {
-  event?.preventDefault()
-
-  if (isSnapping || currentPage.value?.locked) {
+  if (!isPcLayout.value || isSnapping || currentPage.value?.locked) {
     return
   }
+
+  event?.preventDefault()
 
   const targetIndex = Math.min(Math.max(currentIndex.value + direction, 0), snapPages.value.length - 1)
   snapTo(targetIndex)
@@ -72,22 +75,6 @@ function handleWheel(event: WheelEvent) {
   }
 
   requestSnap(event.deltaY > 0 ? 1 : -1, event)
-}
-
-function handleTouchStart(event: TouchEvent) {
-  touchStartY = event.touches[0]?.clientY ?? 0
-}
-
-function handleTouchMove(event: TouchEvent) {
-  const touchY = event.touches[0]?.clientY ?? touchStartY
-  const deltaY = touchStartY - touchY
-
-  if (Math.abs(deltaY) < 32) {
-    return
-  }
-
-  requestSnap(deltaY > 0 ? 1 : -1, event)
-  touchStartY = touchY
 }
 
 function handleKeydown(event: KeyboardEvent) {
@@ -121,15 +108,37 @@ function handleScroll() {
 function isSnapLocked(index: number) {
   return snapPages.value[index]?.locked ?? false
 }
+
+function updateLayoutFlags(event: MediaQueryList | MediaQueryListEvent) {
+  isPcLayout.value = event.matches
+  isSnapping = false
+}
+
+onMounted(() => {
+  layoutQuery = window.matchMedia(
+    'screen and (min-width: 1280px), (max-width: 1279px) and (orientation: landscape)',
+  )
+  updateLayoutFlags(layoutQuery)
+  layoutQuery.addEventListener('change', updateLayoutFlags)
+})
+
+onBeforeUnmount(() => {
+  window.clearTimeout(snapTimer)
+  layoutQuery?.removeEventListener('change', updateLayoutFlags)
+})
 </script>
 
 <style scoped>
 #snapWrap {
-  height: 100vh;
+  width: 100%;
+  height: 100svh;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
   overscroll-behavior-y: contain;
   scrollbar-width: none;
+  container-type: inline-size;
 }
 
 #snapWrap::-webkit-scrollbar {
@@ -137,10 +146,7 @@ function isSnapLocked(index: number) {
 }
 
 #visual {
-  height: 100svh;
-}
-
-#visual {
+  height: 100dvh;
   display: flex;
   align-items: center;
   background:
@@ -186,7 +192,7 @@ function isSnapLocked(index: number) {
   display: grid;
   place-items: center;
   width: 100%;
-  height: 100svh;
+  height: 100dvh;
   scroll-snap-align: start;
   scroll-snap-stop: always;
 }
@@ -195,6 +201,43 @@ function isSnapLocked(index: number) {
   font-size: clamp(3rem, 8vw, 8rem);
   font-weight: 900;
   line-height: 1;
+}
+
+@media screen and (max-width: 1279px) and (orientation: portrait) {
+  #snapWrap {
+    scroll-snap-type: y mandatory;
+    overscroll-behavior-y: auto;
+  }
+
+  #visual {
+    align-items: flex-start;
+    padding: 18svh 4cqw 0;
+    background:
+      linear-gradient(0deg, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0) 42%),
+      url('@/assets/visual_character.png') no-repeat 62% 0 / auto 100%,
+      url('@/assets/visual_bg.webp') no-repeat center / cover;
+  }
+
+  .visualTitle {
+    margin-left: 0;
+    font-size: clamp(4.25rem, 20cqw, 7.5rem);
+    line-height: 0.86;
+    text-shadow: 0 0 0.8rem rgba(0, 0, 0, 0.45);
+  }
+
+  .snapItem {
+    min-height: 100dvh;
+  }
+
+  .sectionTitle {
+    font-size: clamp(3rem, 18cqw, 6rem);
+  }
+}
+
+@media (max-width: 1279px) and (orientation: landscape), screen and (min-width: 1280px) {
+  #snapWrap {
+    overscroll-behavior-y: contain;
+  }
 }
 </style>
 
@@ -205,8 +248,6 @@ function isSnapLocked(index: number) {
     tabindex="0"
     @keydown="handleKeydown"
     @scroll="handleScroll"
-    @touchmove="handleTouchMove"
-    @touchstart="handleTouchStart"
     @wheel="handleWheel"
   >
     <header id="visual" class="snapItem" :data-locked="isSnapLocked(0)">

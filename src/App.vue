@@ -51,6 +51,11 @@ import { RouterLink, RouterView } from 'vue-router'
   letter-spacing: 0.08em;
 }
 
+.navLinks a.router-link-exact-active,
+.navLinks a[aria-current='page'] {
+  color: #bd4300;
+}
+
 .languageSelect {
   display: flex;
   align-items: center;
@@ -64,5 +69,40 @@ import { RouterLink, RouterView } from 'vue-router'
   background: #000000;
   color: #ffffff;
   font: inherit;
+}
+
+@media screen and (max-width: 1279px) and (orientation: portrait) {
+  .siteNav {
+    min-height: 56px;
+    padding: 0 4vw;
+  }
+
+  .navLinks {
+    gap: clamp(0.8rem, 4vw, 1.5rem);
+  }
+
+  .navLinks a,
+  .languageSelect {
+    font-size: clamp(0.78rem, 3.4vw, 0.95rem);
+    letter-spacing: 0.04em;
+  }
+
+  .languageSelect {
+    gap: 0.45rem;
+  }
+
+  .languageSelect span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  .languageSelect select {
+    max-width: 4.5rem;
+    padding: 0.32rem 0.45rem;
+  }
 }
 </style>
