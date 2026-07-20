@@ -1,22 +1,73 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+import { storeToRefs } from 'pinia'
+import { RouterView, useRoute, useRouter } from 'vue-router'
+import { localeOptions, type Locale } from '@/i18n/messages'
+import { useLocaleStore } from '@/stores/locale'
+import { useSectionStore, type SectionId } from '@/stores/section'
+
+const localeStore = useLocaleStore()
+const sectionStore = useSectionStore()
+const route = useRoute()
+const router = useRouter()
+const { locale, t } = storeToRefs(localeStore)
+const { activeSection } = storeToRefs(sectionStore)
+
+const navItems: { id: SectionId; label: () => string }[] = [
+  { id: 'home', label: () => t.value.nav.home },
+  { id: 'about', label: () => t.value.nav.about },
+  { id: 'project', label: () => t.value.nav.project },
+  { id: 'stack', label: () => t.value.nav.stack },
+  { id: 'contact', label: () => t.value.nav.contact },
+]
+
+function setLocale(next: Locale) {
+  localeStore.setLocale(next)
+}
+
+function goToSection(section: SectionId, event: Event) {
+  event.preventDefault()
+
+  if (route.path !== '/') {
+    void router.push({ path: '/', hash: section === 'home' ? '' : `#${section}` }).then(() => {
+      window.dispatchEvent(new CustomEvent<SectionId>('nav-go-to', { detail: section }))
+    })
+    return
+  }
+
+  sectionStore.setActiveSection(section)
+  window.dispatchEvent(new CustomEvent<SectionId>('nav-go-to', { detail: section }))
+}
 </script>
 
 <template>
   <header class="siteNav">
-    <nav class="navLinks" aria-label="Primary navigation">
-      <RouterLink to="/">HOME</RouterLink>
-      <a href="#project">PROJECT</a>
-      <a href="#blog">BLOG</a>
+    <nav class="navLinks" :aria-label="t.nav.home">
+      <a
+        v-for="item in navItems"
+        :key="item.id"
+        :href="item.id === 'home' ? '/' : `#${item.id}`"
+        :class="{ active: activeSection === item.id }"
+        :aria-current="activeSection === item.id ? 'page' : undefined"
+        @click="goToSection(item.id, $event)"
+      >
+        {{ item.label() }}
+      </a>
     </nav>
 
-    <label class="languageSelect">
-      <span>LANGUAGE</span>
-      <select aria-label="Language">
-        <option>EN</option>
-        <option>ZH</option>
-      </select>
-    </label>
+    <div class="languageSelect" role="group" :aria-label="t.nav.language">
+      <span>{{ t.nav.language }}</span>
+      <button
+        v-for="item in localeOptions"
+        :key="item.value"
+        type="button"
+        class="langBtn"
+        :class="{ active: locale === item.value }"
+        :aria-pressed="locale === item.value"
+        @click="setLocale(item.value)"
+      >
+        {{ item.label }}
+      </button>
+    </div>
   </header>
 
   <RouterView />
@@ -27,7 +78,7 @@ import { RouterLink, RouterView } from 'vue-router'
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 10;
+  z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -36,6 +87,7 @@ import { RouterLink, RouterView } from 'vue-router'
   padding: 0 3vw;
   background: #000000;
   color: #ffffff;
+  pointer-events: auto;
 }
 
 .navLinks {
@@ -51,7 +103,7 @@ import { RouterLink, RouterView } from 'vue-router'
   letter-spacing: 0.08em;
 }
 
-.navLinks a.router-link-exact-active,
+.navLinks a.active,
 .navLinks a[aria-current='page'] {
   color: #bd4300;
 }
@@ -59,16 +111,32 @@ import { RouterLink, RouterView } from 'vue-router'
 .languageSelect {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.45rem;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1001;
 }
 
-.languageSelect select {
+.langBtn {
   border: 2px solid #ffffff;
   border-radius: 0;
-  padding: 0.4rem 0.8rem;
+  padding: 0.35rem 0.65rem;
   background: #000000;
   color: #ffffff;
   font: inherit;
+  font-size: 0.85em;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+
+.langBtn:hover {
+  background: #222222;
+}
+
+.langBtn.active {
+  background: #bd4300;
+  border-color: #bd4300;
+  color: #ffffff;
 }
 
 @media screen and (max-width: 1279px) and (orientation: portrait) {
@@ -87,10 +155,6 @@ import { RouterLink, RouterView } from 'vue-router'
     letter-spacing: 0.04em;
   }
 
-  .languageSelect {
-    gap: 0.45rem;
-  }
-
   .languageSelect span {
     position: absolute;
     width: 1px;
@@ -100,9 +164,8 @@ import { RouterLink, RouterView } from 'vue-router'
     white-space: nowrap;
   }
 
-  .languageSelect select {
-    max-width: 4.5rem;
-    padding: 0.32rem 0.45rem;
+  .langBtn {
+    padding: 0.28rem 0.42rem;
   }
 }
 </style>
