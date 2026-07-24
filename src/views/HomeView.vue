@@ -98,16 +98,9 @@ const contactMeta: ContactMeta[] = [
     external: true,
   },
   {
-    label: 'Profile',
-    value: 'PaulPerkenstein',
-    href: 'https://github.com/dddqmmx',
-    external: true,
-  },
-  {
-    label: 'Issues',
-    valueKey: 'issues',
-    href: 'https://github.com/dddqmmx/dddqmmx.github.io/issues',
-    external: true,
+    label: 'Email',
+    value: 'dddqmmx@gmail.com',
+    href: 'mailto:dddqmmx@gmail.com',
   },
 ]
 
@@ -622,7 +615,7 @@ onBeforeUnmount(() => {
 
 .contactGrid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
 }
 
@@ -661,6 +654,7 @@ onBeforeUnmount(() => {
   font-size: clamp(1.15rem, 2.4vw, 1.45rem);
   font-weight: 900;
   line-height: 1.25;
+  overflow-wrap: anywhere;
 }
 
 .contactAction {
@@ -860,8 +854,6 @@ onBeforeUnmount(() => {
             <span class="contactAction">{{ t.contact.open }}</span>
           </a>
         </div>
-
-        <p class="footerMeta">© {{ new Date().getFullYear() }} dddqmmx</p>
       </div>
     </footer>
   </div>

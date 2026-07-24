@@ -103,7 +103,7 @@ export const messages: Record<Locale, Messages> = {
     contact: {
       kicker: 'Contact',
       title: '联系方式',
-      lead: '欢迎通过 GitHub 联系，讨论开源项目、协作或问题反馈',
+      lead: '欢迎通过邮箱或 GitHub 联系，讨论开源项目、协作或问题反馈',
       open: '打开 →',
       issues: '提交讨论',
     },
@@ -160,7 +160,7 @@ export const messages: Record<Locale, Messages> = {
     contact: {
       kicker: 'Contact',
       title: 'Contact',
-      lead: 'Reach me on GitHub for open-source discussion, collaboration, or feedback',
+      lead: 'Reach me by email or on GitHub for open-source discussion, collaboration, or feedback',
       open: 'Open →',
       issues: 'Open a discussion',
     },
@@ -217,7 +217,7 @@ export const messages: Record<Locale, Messages> = {
     contact: {
       kicker: 'Contact',
       title: '連絡先',
-      lead: 'OSS の相談、協業、フィードバックは GitHub からどうぞ',
+      lead: 'OSS の相談、協業、フィードバックはメールまたは GitHub からどうぞ',
       open: '開く →',
       issues: 'ディスカッションを開く',
     },
@@ -225,7 +225,7 @@ export const messages: Record<Locale, Messages> = {
 }
 
 export const localeOptions: { value: Locale; label: string }[] = [
-  { value: 'zh', label: '中文' },
+  { value: 'en', label: 'English' },
   { value: 'ja', label: '日本語' },
-  { value: 'en', label: 'EN' },
+  { value: 'zh', label: '简体中文' },
 ]
