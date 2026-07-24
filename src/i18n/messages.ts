@@ -24,6 +24,8 @@ type Messages = {
     role: string
     summary: string
     highlights: string[]
+    languagesLabel: string
+    languages: string[]
     profileLink: string
   }
   project: {
@@ -74,6 +76,8 @@ export const messages: Record<Locale, Messages> = {
         'Xposed 隐私与系统模块',
         'Rust / C++ 系统与桌面开发',
       ],
+      languagesLabel: '语言',
+      languages: ['简体中文', '日语'],
       profileLink: 'GitHub 主页 →',
     },
     project: {
@@ -129,6 +133,8 @@ export const messages: Record<Locale, Messages> = {
         'Xposed privacy & system modules',
         'Rust / C++ systems & desktop development',
       ],
+      languagesLabel: 'Languages',
+      languages: ['Simplified Chinese', 'Japanese'],
       profileLink: 'GitHub Profile →',
     },
     project: {
@@ -186,6 +192,8 @@ export const messages: Record<Locale, Messages> = {
         'Xposed プライバシー／システムモジュール',
         'Rust / C++ によるシステムとデスクトップ開発',
       ],
+      languagesLabel: '言語',
+      languages: ['簡体中国語', '日本語'],
       profileLink: 'GitHub プロフィール →',
     },
     project: {

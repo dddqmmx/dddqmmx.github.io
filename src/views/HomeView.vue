@@ -455,6 +455,13 @@ onBeforeUnmount(() => {
   line-height: 1.75;
 }
 
+.aboutLanguages {
+  margin-top: 0.85rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  opacity: 0.72;
+}
+
 .profileLink {
   display: inline-block;
   margin-top: 1.25rem;
@@ -768,6 +775,9 @@ onBeforeUnmount(() => {
             <h3 class="aboutName">{{ aboutMeta.name }}</h3>
             <p class="aboutRole">{{ t.about.role }} · @{{ aboutMeta.handle }}</p>
             <p class="aboutSummary">{{ t.about.summary }}</p>
+            <p class="aboutLanguages">
+              {{ t.about.languagesLabel }} · {{ t.about.languages.join(' / ') }}
+            </p>
             <a
               class="profileLink"
               :href="aboutMeta.profileUrl"
