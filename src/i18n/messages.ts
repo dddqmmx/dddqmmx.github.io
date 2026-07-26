@@ -14,11 +14,17 @@ type Messages = {
     about: string
     project: string
     stack: string
+    blog: string
     contact: string
+    top: string
     language: string
+    primary: string
+  }
+  hero: {
+    tagline: string
+    sub: string
   }
   about: {
-    kicker: string
     title: string
     lead: string
     role: string
@@ -29,14 +35,13 @@ type Messages = {
     profileLink: string
   }
   project: {
-    kicker: string
     title: string
     lead: string
     view: string
+    roles: Record<ProjectKey, string>
     items: Record<ProjectKey, string>
   }
   stack: {
-    kicker: string
     title: string
     lead: string
     groups: {
@@ -45,12 +50,16 @@ type Messages = {
       focus: string
     }
   }
+  blog: {
+    title: string
+    lead: string
+    back: string
+    notFound: string
+  }
   contact: {
-    kicker: string
     title: string
     lead: string
     open: string
-    issues: string
   }
 }
 
@@ -61,11 +70,17 @@ export const messages: Record<Locale, Messages> = {
       about: '简介',
       project: '项目',
       stack: '技术栈',
+      blog: '博客',
       contact: '联系',
+      top: '顶部',
       language: '语言',
+      primary: '主导航',
+    },
+    hero: {
+      tagline: '独立开发者',
+      sub: '隐私模块 · 桌面客户端 · 音频与 AI 工具',
     },
     about: {
-      kicker: 'About',
       title: '个人简介',
       lead: '关于我是谁、在做什么，以及我如何构建软件',
       role: '独立开发者',
@@ -81,10 +96,17 @@ export const messages: Record<Locale, Messages> = {
       profileLink: 'GitHub 主页 →',
     },
     project: {
-      kicker: 'Work',
       title: '项目列表',
       lead: '精选原创开源项目，覆盖隐私模块、桌面客户端与网络/音频工具',
       view: '查看项目 →',
+      roles: {
+        arirang: '隐私防护模块',
+        ncmDesktop: 'Linux 音乐客户端',
+        xminecraft: '协议伪装隧道',
+        soVits: 'AI 翻唱机器人插件',
+        uvr5: '音频分离命令行',
+        fuckClipboard: '剪贴板守卫',
+      },
       items: {
         arirang: '隐私向 Xposed 模块：限制应用读取敏感设备数据，减少 API 滥用带来的追踪',
         ncmDesktop: 'Linux 桌面端网易云音乐第三方客户端，基于 Rust 构建',
@@ -95,7 +117,6 @@ export const messages: Record<Locale, Messages> = {
       },
     },
     stack: {
-      kicker: 'Skills',
       title: '技术栈',
       lead: '根据公开仓库语言与项目方向汇总的技术栈',
       groups: {
@@ -104,12 +125,16 @@ export const messages: Record<Locale, Messages> = {
         focus: '方向',
       },
     },
+    blog: {
+      title: '博客',
+      lead: '关于开源、系统开发与设计的记录',
+      back: '← 返回博客',
+      notFound: '文章不存在',
+    },
     contact: {
-      kicker: 'Contact',
       title: '联系方式',
       lead: '欢迎通过邮箱或 GitHub 联系，讨论开源项目、协作或问题反馈',
       open: '打开 →',
-      issues: '提交讨论',
     },
   },
   en: {
@@ -118,11 +143,17 @@ export const messages: Record<Locale, Messages> = {
       about: 'ABOUT',
       project: 'PROJECT',
       stack: 'STACK',
+      blog: 'BLOG',
       contact: 'CONTACT',
+      top: 'TOP',
       language: 'LANGUAGE',
+      primary: 'Primary',
+    },
+    hero: {
+      tagline: 'Independent Developer',
+      sub: 'Privacy modules · desktop clients · audio & AI tools',
     },
     about: {
-      kicker: 'About',
       title: 'About Me',
       lead: 'Who I am, what I build, and how I approach software',
       role: 'Independent Developer',
@@ -138,10 +169,17 @@ export const messages: Record<Locale, Messages> = {
       profileLink: 'GitHub Profile →',
     },
     project: {
-      kicker: 'Work',
       title: 'Projects',
       lead: 'Selected original open-source projects across privacy modules, desktop clients, and network/audio tools',
       view: 'View Project →',
+      roles: {
+        arirang: 'Privacy defense module',
+        ncmDesktop: 'Music client for Linux',
+        xminecraft: 'Protocol camouflage tunnel',
+        soVits: 'AI cover bot plugin',
+        uvr5: 'Audio separation CLI',
+        fuckClipboard: 'Clipboard guard',
+      },
       items: {
         arirang:
           'Privacy-focused Xposed module that limits apps from reading sensitive device data and reduces tracking via API abuse',
@@ -154,7 +192,6 @@ export const messages: Record<Locale, Messages> = {
       },
     },
     stack: {
-      kicker: 'Skills',
       title: 'Tech Stack',
       lead: 'Languages and focus areas summarized from public repositories and project directions',
       groups: {
@@ -163,12 +200,16 @@ export const messages: Record<Locale, Messages> = {
         focus: 'Focus',
       },
     },
+    blog: {
+      title: 'Blog',
+      lead: 'Notes on open source, systems work, and design',
+      back: '← Back to Blog',
+      notFound: 'Post not found',
+    },
     contact: {
-      kicker: 'Contact',
       title: 'Contact',
       lead: 'Reach me by email or on GitHub for open-source discussion, collaboration, or feedback',
       open: 'Open →',
-      issues: 'Open a discussion',
     },
   },
   ja: {
@@ -177,11 +218,17 @@ export const messages: Record<Locale, Messages> = {
       about: '紹介',
       project: 'プロジェクト',
       stack: '技術',
+      blog: 'ブログ',
       contact: '連絡',
+      top: 'トップ',
       language: '言語',
+      primary: 'メインナビゲーション',
+    },
+    hero: {
+      tagline: 'インディペンデント開発者',
+      sub: 'プライバシーモジュール · デスクトップクライアント · 音声 / AI ツール',
     },
     about: {
-      kicker: 'About',
       title: '自己紹介',
       lead: '何者か、何を作っているか、どうソフトウェアを構築しているか',
       role: 'インディペンデント開発者',
@@ -197,10 +244,17 @@ export const messages: Record<Locale, Messages> = {
       profileLink: 'GitHub プロフィール →',
     },
     project: {
-      kicker: 'Work',
       title: 'プロジェクト',
       lead: 'プライバシーモジュール、デスクトップクライアント、ネットワーク/音声ツールを中心に厳選したオリジナル OSS',
       view: 'プロジェクトを見る →',
+      roles: {
+        arirang: 'プライバシー防御モジュール',
+        ncmDesktop: 'Linux 向け音楽クライアント',
+        xminecraft: 'プロトコル偽装トンネル',
+        soVits: 'AI カバー ボットプラグイン',
+        uvr5: '音源分離 CLI',
+        fuckClipboard: 'クリップボードガード',
+      },
       items: {
         arirang:
           'プライバシー重視の Xposed モジュールで、アプリによる機微な端末データ読み取りを制限し、API 乱用による追跡を抑える',
@@ -213,7 +267,6 @@ export const messages: Record<Locale, Messages> = {
       },
     },
     stack: {
-      kicker: 'Skills',
       title: '技術スタック',
       lead: '公開リポジトリの言語とプロジェクト方向からまとめた技術スタック',
       groups: {
@@ -222,12 +275,16 @@ export const messages: Record<Locale, Messages> = {
         focus: 'フォーカス',
       },
     },
+    blog: {
+      title: 'ブログ',
+      lead: 'オープンソース、システム開発、デザインについての記録',
+      back: '← ブログへ戻る',
+      notFound: '記事が見つかりません',
+    },
     contact: {
-      kicker: 'Contact',
       title: '連絡先',
       lead: 'OSS の相談、協業、フィードバックはメールまたは GitHub からどうぞ',
       open: '開く →',
-      issues: 'ディスカッションを開く',
     },
   },
 }

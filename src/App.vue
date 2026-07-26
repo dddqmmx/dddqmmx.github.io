@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
-import { RouterView, useRoute, useRouter } from 'vue-router'
+import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router'
 import { localeOptions, type Locale } from '@/i18n/messages'
 import { useLocaleStore } from '@/stores/locale'
 import { useSectionStore, type SectionId } from '@/stores/section'
@@ -16,13 +16,43 @@ const languageMenuOpen = ref(false)
 const languageSelect = ref<HTMLElement | null>(null)
 const languageToggle = ref<HTMLButtonElement | null>(null)
 
-const navItems: { id: SectionId; label: () => string }[] = [
-  { id: 'home', label: () => t.value.nav.home },
+// Tier 2 — top-level pages (routes).
+const routeTabs: { to: string; label: () => string }[] = [
+  { to: '/', label: () => t.value.nav.home },
+  { to: '/projects', label: () => t.value.nav.project },
+  { to: '/blog', label: () => t.value.nav.blog },
+]
+
+// Tier 3 — in-page anchors of the current page (Home only for now).
+const sectionTabs: { id: SectionId; label: () => string }[] = [
+  { id: 'home', label: () => t.value.nav.top },
   { id: 'about', label: () => t.value.nav.about },
-  { id: 'project', label: () => t.value.nav.project },
   { id: 'stack', label: () => t.value.nav.stack },
   { id: 'contact', label: () => t.value.nav.contact },
 ]
+
+const onHome = computed(() => route.path === '/')
+
+// The Home section submenu (Tier 2) is hidden by default and revealed via this toggle.
+const sectionsOpen = ref(false)
+
+function toggleHome(event: Event) {
+  event.preventDefault()
+  if (onHome.value) {
+    sectionsOpen.value = !sectionsOpen.value
+  } else {
+    // From another page, HOME navigates home; the submenu stays hidden by default.
+    void router.push('/')
+  }
+}
+
+// Reset the submenu to hidden on any navigation so it never lingers open across pages.
+watch(
+  () => route.path,
+  () => {
+    sectionsOpen.value = false
+  },
+)
 
 function setLocale(next: Locale) {
   localeStore.setLocale(next)
@@ -95,6 +125,23 @@ function handleDocumentPointerDown(event: PointerEvent) {
   }
 }
 
+function handleLanguageFocusout(event: FocusEvent) {
+  // Close when focus leaves the widget entirely (Tab out, or focus leaving the page).
+  if (!languageSelect.value?.contains(event.relatedTarget as Node | null)) {
+    languageMenuOpen.value = false
+  }
+}
+
+function isRouteActive(to: string) {
+  // '/' must match exactly; sub-pages also match their nested paths (e.g. /blog/:slug).
+  return to === '/' ? route.path === '/' : route.path === to || route.path.startsWith(`${to}/`)
+}
+
+function isSectionActive(id: SectionId) {
+  // Section highlights only apply on the home route; sub-pages own their own highlight.
+  return onHome.value && activeSection.value === id
+}
+
 function goToSection(section: SectionId, event: Event) {
   event.preventDefault()
 
@@ -115,62 +162,106 @@ onBeforeUnmount(() => document.removeEventListener('pointerdown', handleDocument
 
 <template>
   <header class="siteNav">
-    <nav class="navLinks" :aria-label="t.nav.home">
-      <a
-        v-for="item in navItems"
-        :key="item.id"
-        :href="item.id === 'home' ? '/' : `#${item.id}`"
-        :class="{ active: activeSection === item.id }"
-        :aria-current="activeSection === item.id ? 'page' : undefined"
-        @click="goToSection(item.id, $event)"
-      >
-        {{ item.label() }}
-      </a>
-    </nav>
-
-    <div
-      ref="languageSelect"
-      class="languageSelect"
-      @keydown="handleLanguageKeydown"
-    >
-      <button
-        ref="languageToggle"
-        type="button"
-        class="languageToggle"
-        aria-haspopup="menu"
-        aria-controls="language-menu"
-        :aria-expanded="languageMenuOpen"
-        @click="toggleLanguageMenu"
-      >
-        <span>{{ t.nav.language }}</span>
-        <span class="languageCaret" aria-hidden="true"></span>
-      </button>
+    <!-- Tier 1 — top-level page menu + language -->
+    <div class="navTier navTierTop">
+      <nav class="navPages" :aria-label="t.nav.primary">
+        <template v-for="tab in routeTabs" :key="tab.to">
+          <button
+            v-if="tab.to === '/'"
+            type="button"
+            class="navPageTab navPageToggle"
+            :class="{ active: isRouteActive(tab.to) }"
+            :aria-current="isRouteActive(tab.to) ? 'page' : undefined"
+            aria-haspopup="true"
+            aria-controls="section-nav"
+            :aria-expanded="onHome && sectionsOpen"
+            @click="toggleHome($event)"
+          >
+            {{ tab.label() }}
+            <span class="navPageCaret" aria-hidden="true"></span>
+          </button>
+          <RouterLink
+            v-else
+            :to="tab.to"
+            class="navPageTab"
+            :class="{ active: isRouteActive(tab.to) }"
+            :aria-current="isRouteActive(tab.to) ? 'page' : undefined"
+          >
+            {{ tab.label() }}
+          </RouterLink>
+        </template>
+      </nav>
 
       <div
-        v-show="languageMenuOpen"
-        id="language-menu"
-        class="languageMenu"
-        role="menu"
-        :aria-label="t.nav.language"
+        ref="languageSelect"
+        class="languageSelect"
+        @keydown="handleLanguageKeydown"
+        @focusout="handleLanguageFocusout"
       >
         <button
-          v-for="item in localeOptions"
-          :key="item.value"
+          ref="languageToggle"
           type="button"
-          class="languageOption"
-          :class="{ active: locale === item.value }"
-          role="menuitemradio"
-          :aria-checked="locale === item.value"
-          :data-locale="item.value"
-          @click="setLocale(item.value)"
+          class="languageToggle"
+          aria-haspopup="menu"
+          aria-controls="language-menu"
+          :aria-expanded="languageMenuOpen"
+          @click="toggleLanguageMenu"
         >
-          {{ item.label }}
+          <span>{{ t.nav.language }}</span>
+          <span class="languageCaret" aria-hidden="true"></span>
         </button>
+
+        <div
+          v-show="languageMenuOpen"
+          id="language-menu"
+          class="languageMenu"
+          role="menu"
+          :aria-label="t.nav.language"
+        >
+          <button
+            v-for="item in localeOptions"
+            :key="item.value"
+            type="button"
+            class="languageOption"
+            :class="{ active: locale === item.value }"
+            role="menuitemradio"
+            :aria-checked="locale === item.value"
+            :data-locale="item.value"
+            @click="setLocale(item.value)"
+          >
+            {{ item.label }}
+          </button>
+        </div>
       </div>
     </div>
+
+    <!-- Tier 2 — in-page section anchors (Home only, toggled open) -->
+    <Transition name="submenu">
+      <nav
+        v-if="onHome && sectionsOpen"
+        id="section-nav"
+        class="navTier navTierSections"
+        aria-label="Section navigation"
+      >
+        <a
+          v-for="section in sectionTabs"
+          :key="section.id"
+          :href="section.id === 'home' ? '/' : `#${section.id}`"
+          :class="{ active: isSectionActive(section.id) }"
+          :aria-current="isSectionActive(section.id) ? 'page' : undefined"
+          @click="goToSection(section.id, $event)"
+        >
+          {{ section.label() }}
+        </a>
+      </nav>
+    </Transition>
   </header>
 
-  <RouterView />
+  <RouterView v-slot="{ Component }">
+    <Transition name="page" mode="out-in">
+      <component :is="Component" />
+    </Transition>
+  </RouterView>
 </template>
 
 <style scoped>
@@ -179,52 +270,129 @@ onBeforeUnmount(() => document.removeEventListener('pointerdown', handleDocument
   top: 0;
   left: 0;
   z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   width: 100%;
-  min-height: 64px;
-  padding: 0 3vw;
-  background: #000000;
   color: #ffffff;
   pointer-events: auto;
 }
 
-.navLinks {
+/* ---------- shared tier row ---------- */
+.navTier {
   display: flex;
   align-items: center;
-  gap: clamp(1.5rem, 4vw, 4rem);
+  width: 100%;
+  padding: 0 3vw;
 }
 
-.navLinks a,
-.languageSelect {
-  font-size: clamp(1rem, 1.5vw, 1.45rem);
-  font-weight: 800;
-  letter-spacing: 0.08em;
+/* Tier 1 — top-level page menu + language, pure black */
+.navTierTop {
+  min-height: var(--nav-tier1-h);
+  justify-content: space-between;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.98) 0%, rgba(0, 0, 0, 0.9) 100%);
+  backdrop-filter: blur(6px);
 }
 
-.navLinks a.active,
-.navLinks a[aria-current='page'] {
-  color: #bd4300;
+/* Top-level page menu (routes), sitting inside Tier 1 */
+.navPages {
+  display: flex;
+  align-items: center;
+  gap: clamp(1.5rem, 3.5vw, 3rem);
+  min-width: 0;
 }
 
+/* Tier 2 — section anchors (Home only), opaque gray bar */
+.navTierSections {
+  gap: clamp(1rem, 2.6vw, 2.25rem);
+  min-height: var(--nav-tier2-h);
+  background: var(--color-bg-raise);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* ---------- menu links (both tiers) ---------- */
+.navPageTab,
+.navTierSections a {
+  position: relative;
+  flex-shrink: 0;
+  font-family: var(--ff-en);
+  font-weight: 700;
+  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.82);
+  transition: color 0.2s ease;
+}
+
+/* The Home tab is a <button>; strip native chrome so it matches the links */
+.navPageToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  min-height: var(--nav-tier1-h);
+  border: 0;
+  padding: 0;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+}
+
+.navPageTab {
+  font-size: clamp(0.95rem, 1.4vw, 1.2rem);
+  letter-spacing: 0.1em;
+}
+
+.navTierSections a {
+  font-size: clamp(0.72rem, 1vw, 0.82rem);
+  letter-spacing: 0.12em;
+}
+
+.navPageTab:hover,
+.navTierSections a:hover {
+  color: #ffffff;
+}
+
+.navPageToggle:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 3px;
+}
+
+.navPageTab.active,
+.navPageTab[aria-current='page'],
+.navTierSections a.active,
+.navTierSections a[aria-current='page'] {
+  color: var(--color-orange-bright);
+}
+
+/* Caret indicating the Home tab opens the section submenu */
+.navPageCaret {
+  width: 0;
+  height: 0;
+  border-top: 0.42em solid currentColor;
+  border-right: 0.3em solid transparent;
+  border-left: 0.3em solid transparent;
+  transition: transform 0.2s ease;
+}
+
+.navPageToggle[aria-expanded='true'] .navPageCaret {
+  transform: rotate(180deg);
+}
+
+/* ---------- language widget ---------- */
 .languageSelect {
   position: relative;
   z-index: 1001;
   flex-shrink: 0;
+  font-family: var(--ff-en);
+  font-size: clamp(0.9rem, 1.3vw, 1.1rem);
+  font-weight: 700;
+  letter-spacing: 0.1em;
 }
 
 .languageToggle {
   display: flex;
   align-items: center;
-  min-height: 64px;
+  min-height: var(--nav-tier1-h);
   border: 0;
   padding: 0;
-  background: #000000;
+  background: transparent;
   color: #ffffff;
   font: inherit;
-  font-weight: 400;
-  letter-spacing: 0;
   cursor: pointer;
 }
 
@@ -251,7 +419,7 @@ onBeforeUnmount(() => document.removeEventListener('pointerdown', handleDocument
   max-width: calc(100vw - 2rem);
   overflow: hidden;
   border: 1px solid #656565;
-  background: #252525;
+  background: var(--color-bg-raise);
   box-shadow: 0 10px 28px rgb(0 0 0 / 45%);
 }
 
@@ -263,7 +431,7 @@ onBeforeUnmount(() => document.removeEventListener('pointerdown', handleDocument
   border-bottom: 1px solid #555555;
   border-radius: 0;
   padding: 0.7rem 1rem;
-  background: #252525;
+  background: var(--color-bg-raise);
   color: #ffffff;
   font: inherit;
   font-size: 0.9em;
@@ -283,51 +451,111 @@ onBeforeUnmount(() => document.removeEventListener('pointerdown', handleDocument
 }
 
 .languageOption.active {
-  color: #d94e00;
+  color: var(--color-orange-bright);
 }
 
-@media screen and (max-width: 1279px) and (orientation: portrait) {
-  .siteNav {
-    min-height: 56px;
+/* ---------- section submenu toggle animation ---------- */
+.submenu-enter-active,
+.submenu-leave-active {
+  transition: opacity 0.22s ease, transform 0.22s ease;
+  overflow: hidden;
+}
+
+.submenu-enter-from,
+.submenu-leave-to {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .submenu-enter-active,
+  .submenu-leave-active {
+    transition: opacity 0.18s ease;
+  }
+
+  .submenu-enter-from,
+  .submenu-leave-to {
+    transform: none;
+  }
+}
+
+/* ---------- responsive ---------- */
+@media screen and (max-width: 1279px) and (orientation: portrait),
+  screen and (max-width: 899px) {
+  .navTier {
     padding: 0 4vw;
   }
 
-  .navLinks {
-    width: calc(100% - 6.75rem);
-    gap: clamp(0.75rem, 4vw, 1.5rem);
+  /* Page/section menus scroll horizontally on narrow screens */
+  .navPages,
+  .navTierSections {
     overflow-x: auto;
     scrollbar-width: none;
+    -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 24px), transparent 100%);
+    mask-image: linear-gradient(90deg, #000 calc(100% - 24px), transparent 100%);
   }
 
-  .navLinks::-webkit-scrollbar {
+  .navPages::-webkit-scrollbar,
+  .navTierSections::-webkit-scrollbar {
     display: none;
   }
 
-  .navLinks a,
-  .languageSelect {
-    font-size: clamp(0.78rem, 3.4vw, 0.95rem);
-    letter-spacing: 0.04em;
+  .navPages {
+    margin-right: 1rem;
+  }
+
+  .navPageTab {
+    font-size: clamp(0.85rem, 3.4vw, 1rem);
+    letter-spacing: 0.06em;
+  }
+
+  .navPageToggle {
+    min-height: var(--nav-tier1-h);
   }
 
   .languageToggle {
-    min-height: 56px;
-  }
-
-  .languageSelect {
-    position: absolute;
-    top: 0;
-    right: 4vw;
-    background: #000000;
+    min-height: var(--nav-tier1-h);
+    padding-left: 0.6rem;
   }
 
   .languageMenu {
     position: fixed;
-    top: 56px;
+    top: var(--nav-tier1-h);
     right: 4vw;
   }
 
   .languageCaret {
     margin-left: 0.5rem;
+  }
+}
+</style>
+
+<!-- Route transitions (unscoped: classes land on routed component roots) -->
+<style>
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.28s ease, transform 0.28s ease;
+}
+
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-enter-active,
+  .page-leave-active {
+    transition: opacity 0.2s ease;
+  }
+
+  .page-enter-from,
+  .page-leave-to {
+    transform: none;
   }
 }
 </style>
