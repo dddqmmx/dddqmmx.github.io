@@ -105,7 +105,7 @@ export const messages: Record<Locale, Messages> = {
         xminecraft: '协议伪装隧道',
         soVits: 'AI 翻唱机器人插件',
         uvr5: '音频分离命令行',
-        fuckClipboard: '剪贴板守卫',
+        fuckClipboard: '剪切板拦截模块',
       },
       items: {
         arirang: '隐私向 Xposed 模块：限制应用读取敏感设备数据，减少 API 滥用带来的追踪',
@@ -178,7 +178,7 @@ export const messages: Record<Locale, Messages> = {
         xminecraft: 'Protocol camouflage tunnel',
         soVits: 'AI cover bot plugin',
         uvr5: 'Audio separation CLI',
-        fuckClipboard: 'Clipboard guard',
+        fuckClipboard: 'Clipboard interception module',
       },
       items: {
         arirang:
@@ -253,7 +253,7 @@ export const messages: Record<Locale, Messages> = {
         xminecraft: 'プロトコル偽装トンネル',
         soVits: 'AI カバー ボットプラグイン',
         uvr5: '音源分離 CLI',
-        fuckClipboard: 'クリップボードガード',
+        fuckClipboard: 'クリップボード遮断モジュール',
       },
       items: {
         arirang:

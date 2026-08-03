@@ -57,7 +57,6 @@ const projects = computed(() =>
     primaryTag: project.tags[0],
     otherTags: project.tags.slice(1),
     lead: index === 0,
-    wide: index === projectMeta.length - 1,
   })),
 )
 </script>
@@ -78,7 +77,7 @@ const projects = computed(() =>
           v-for="project in projects"
           :key="project.name"
           class="castTile"
-          :class="{ lead: project.lead, wide: project.wide }"
+          :class="{ lead: project.lead }"
           :href="project.href"
           target="_blank"
           rel="noopener noreferrer"
@@ -183,10 +182,6 @@ const projects = computed(() =>
 
 .castTile.lead {
   grid-row: span 2;
-}
-
-.castTile.wide {
-  grid-column: span 2;
 }
 
 .castTile::after {
@@ -342,10 +337,6 @@ const projects = computed(() =>
 
   .castTile.lead {
     grid-row: span 1;
-  }
-
-  .castTile.wide {
-    grid-column: span 1;
   }
 }
 
