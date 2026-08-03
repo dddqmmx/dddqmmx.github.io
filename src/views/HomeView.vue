@@ -604,6 +604,16 @@ onBeforeUnmount(() => {
   }
 }
 
+/* The nav sits at the bottom in portrait, so sections align to the top edge
+   and leave room below for the fixed bottom nav instead of the top header. */
+@media screen and (max-width: 1279px) and (orientation: portrait),
+  screen and (max-width: 899px) {
+  .homeSection {
+    scroll-margin-top: 0;
+    scroll-margin-bottom: calc(var(--nav-tier1-h) + var(--nav-tier2-h));
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .heroTitle span,
   .heroSub {

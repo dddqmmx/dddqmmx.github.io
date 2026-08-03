@@ -119,6 +119,13 @@ const projects = computed(() =>
   background: var(--color-bg-base);
 }
 
+@media screen and (max-width: 1279px) and (orientation: portrait),
+  screen and (max-width: 899px) {
+  .projectsPage {
+    padding: 6vh 0 calc(var(--nav-h-pages) + 10vh);
+  }
+}
+
 .projectsHead {
   display: flex;
   flex-direction: column;

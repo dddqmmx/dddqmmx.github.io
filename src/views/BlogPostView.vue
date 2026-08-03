@@ -56,9 +56,16 @@ const blocks = computed(() => (post.value ? post.value.body[locale.value] : []))
 
 <style scoped>
 .postPage {
-  min-height: 100svh;
+  min-height: 100vh;
   padding: calc(var(--nav-h-pages) + 6vh) 0 10vh;
   background: var(--color-bg-panel);
+}
+
+@media screen and (max-width: 1279px) and (orientation: portrait),
+  screen and (max-width: 899px) {
+  .postPage {
+    padding: 6vh 0 calc(var(--nav-h-pages) + 10vh);
+  }
 }
 
 .post,

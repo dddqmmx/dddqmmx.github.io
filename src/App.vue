@@ -465,8 +465,24 @@ onBeforeUnmount(() => document.removeEventListener('pointerdown', handleDocument
 /* ---------- responsive ---------- */
 @media screen and (max-width: 1279px) and (orientation: portrait),
   screen and (max-width: 899px) {
+  .siteNav {
+    top: auto;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
   .navTier {
     padding: 0 4vw;
+  }
+
+  /* Section submenu sits above the main nav when pinned to the bottom */
+  .navTierSections {
+    order: 0;
+  }
+
+  .navTierTop {
+    order: 1;
   }
 
   /* Page/section menus scroll horizontally on narrow screens */
@@ -474,8 +490,6 @@ onBeforeUnmount(() => document.removeEventListener('pointerdown', handleDocument
   .navTierSections {
     overflow-x: auto;
     scrollbar-width: none;
-    -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 24px), transparent 100%);
-    mask-image: linear-gradient(90deg, #000 calc(100% - 24px), transparent 100%);
   }
 
   .navPages::-webkit-scrollbar,
@@ -488,8 +502,12 @@ onBeforeUnmount(() => document.removeEventListener('pointerdown', handleDocument
   }
 
   .navPageTab {
-    font-size: clamp(0.85rem, 3.4vw, 1rem);
+    font-size: clamp(1rem, 4.5vw, 1.3rem);
     letter-spacing: 0.06em;
+  }
+
+  .navTierSections a {
+    font-size: clamp(0.9rem, 3.8vw, 1.1rem);
   }
 
   .navPageToggle {
@@ -499,12 +517,21 @@ onBeforeUnmount(() => document.removeEventListener('pointerdown', handleDocument
   .languageToggle {
     min-height: var(--nav-tier1-h);
     padding-left: 0.6rem;
+    font-size: clamp(1rem, 4.5vw, 1.3rem);
+  }
+
+  /* Anchor the menu relative to the toggle so it opens upward above the
+     bottom nav; the nav tier's backdrop-filter would otherwise hijack a
+     fixed position and push the menu off-screen. */
+  .languageSelect {
+    z-index: 1002;
   }
 
   .languageMenu {
-    position: fixed;
-    top: var(--nav-tier1-h);
-    right: 4vw;
+    position: absolute;
+    top: auto;
+    bottom: 100%;
+    right: 0;
   }
 
   .languageCaret {

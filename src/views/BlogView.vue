@@ -56,6 +56,13 @@ const entries = computed(() =>
   background: var(--color-bg-panel);
 }
 
+@media screen and (max-width: 1279px) and (orientation: portrait),
+  screen and (max-width: 899px) {
+  .blogPage {
+    padding: 6vh 0 calc(var(--nav-h-pages) + 8vh);
+  }
+}
+
 .blogHead {
   display: flex;
   flex-direction: column;
