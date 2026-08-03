@@ -170,7 +170,7 @@ onBeforeUnmount(() => document.removeEventListener('pointerdown', handleDocument
             v-if="tab.to === '/'"
             type="button"
             class="navPageTab navPageToggle"
-            :class="{ active: isRouteActive(tab.to) }"
+            :class="{ active: onHome && sectionsOpen }"
             :aria-current="isRouteActive(tab.to) ? 'page' : undefined"
             aria-haspopup="true"
             aria-controls="section-nav"
@@ -178,7 +178,6 @@ onBeforeUnmount(() => document.removeEventListener('pointerdown', handleDocument
             @click="toggleHome($event)"
           >
             {{ tab.label() }}
-            <span class="navPageCaret" aria-hidden="true"></span>
           </button>
           <RouterLink
             v-else
@@ -323,12 +322,10 @@ onBeforeUnmount(() => document.removeEventListener('pointerdown', handleDocument
 .navPageToggle {
   display: inline-flex;
   align-items: center;
-  gap: 0.5em;
   min-height: var(--nav-tier1-h);
   border: 0;
   padding: 0;
   background: transparent;
-  font: inherit;
   cursor: pointer;
 }
 
@@ -357,20 +354,6 @@ onBeforeUnmount(() => document.removeEventListener('pointerdown', handleDocument
 .navTierSections a.active,
 .navTierSections a[aria-current='page'] {
   color: var(--color-orange-bright);
-}
-
-/* Caret indicating the Home tab opens the section submenu */
-.navPageCaret {
-  width: 0;
-  height: 0;
-  border-top: 0.42em solid currentColor;
-  border-right: 0.3em solid transparent;
-  border-left: 0.3em solid transparent;
-  transition: transform 0.2s ease;
-}
-
-.navPageToggle[aria-expanded='true'] .navPageCaret {
-  transform: rotate(180deg);
 }
 
 /* ---------- language widget ---------- */

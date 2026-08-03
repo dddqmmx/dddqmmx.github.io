@@ -14,12 +14,20 @@ function detectLocale(): Locale {
     return saved
   }
 
-  const language = window.navigator.language.toLowerCase()
-  if (language.startsWith('ja')) {
-    return 'ja'
-  }
-  if (language.startsWith('zh')) {
-    return 'zh'
+  // Respect the browser's full, ordered preference list (navigator.languages).
+  const preferences =
+    typeof window.navigator.languages === 'object' && window.navigator.languages.length > 0
+      ? window.navigator.languages
+      : [window.navigator.language]
+
+  for (const raw of preferences) {
+    const language = raw.toLowerCase()
+    if (language.startsWith('ja')) {
+      return 'ja'
+    }
+    if (language.startsWith('zh')) {
+      return 'zh'
+    }
   }
   return 'en'
 }
