@@ -28,12 +28,6 @@ const projectMeta: ProjectMeta[] = [
     href: 'https://github.com/dddqmmx/ncm-desktop-for-linux',
   },
   {
-    key: 'xminecraft',
-    name: 'xminecraft',
-    tags: ['Rust', 'Proxy', 'Network'],
-    href: 'https://github.com/dddqmmx/xminecraft',
-  },
-  {
     key: 'soVits',
     name: 'so-vits-svc-cover',
     tags: ['Java', 'AI', 'Mirai'],
