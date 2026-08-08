@@ -24,7 +24,7 @@ const aboutMeta = {
 const techItems = {
   languages: ['Rust', 'Java', 'Python', 'TypeScript', 'Vue', 'C++'],
   domains: ['Android / Xposed', 'Linux Desktop', 'Privacy', 'Audio / AI', 'Networking'],
-  focus: ['System Modules', 'Desktop Clients', 'CLI Tools', 'Open Source'],
+  focus: ['System Modules', 'Desktop Applications', 'CLI Tools', 'Open Source'],
 }
 
 const contactMeta: ContactMeta[] = [
@@ -151,10 +151,6 @@ onBeforeUnmount(() => {
         </h1>
         <p class="heroSub">{{ t.hero.sub }}</p>
       </div>
-      <a class="scrollCue" href="#about" @click.prevent="scrollToSection('about')">
-        <span class="scrollCueLabel">SCROLL</span>
-        <span class="scrollCueLine" aria-hidden="true"></span>
-      </a>
     </header>
 
     <!-- ABOUT -->
@@ -331,46 +327,6 @@ onBeforeUnmount(() => {
   color: var(--color-f-dim);
   opacity: 0;
   animation: titleReveal 0.6s ease 0.7s forwards;
-}
-
-.scrollCue {
-  position: absolute;
-  left: 50%;
-  bottom: 2.5rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.6rem;
-  transform: translateX(-50%);
-}
-
-.scrollCueLabel {
-  font-family: var(--ff-en);
-  font-size: 0.7rem;
-  font-weight: var(--fw-bo);
-  letter-spacing: 0.24em;
-  color: var(--color-f-faint);
-}
-
-.scrollCueLine {
-  width: 1px;
-  height: 3rem;
-  background: linear-gradient(180deg, var(--color-gold), transparent);
-  animation: cuePulse 1.8s ease-in-out infinite;
-}
-
-@keyframes cuePulse {
-  0%,
-  100% {
-    opacity: 0.3;
-    transform: scaleY(0.7);
-    transform-origin: top;
-  }
-  50% {
-    opacity: 1;
-    transform: scaleY(1);
-    transform-origin: top;
-  }
 }
 
 /* ---------- SECTION SHELL ---------- */
@@ -621,10 +577,6 @@ onBeforeUnmount(() => {
     opacity: 1;
     transform: none;
   }
-
-  .scrollCueLine {
-    animation: none;
-  }
 }
 
 @media (max-width: 560px) {
@@ -639,10 +591,6 @@ onBeforeUnmount(() => {
 
   .heroInner {
     margin-left: 6vw;
-  }
-
-  .scrollCue {
-    display: none;
   }
 }
 </style>

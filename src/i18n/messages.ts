@@ -77,15 +77,15 @@ export const messages: Record<Locale, Messages> = {
       primary: '主导航',
     },
     hero: {
-      tagline: '独立开发者',
-      sub: '隐私模块 · 桌面客户端 · 音频与 AI 工具',
+      tagline: '软件开发者',
+      sub: '隐私模块 · 桌面程序 · 音频与 AI 工具',
     },
     about: {
       title: '个人简介',
       lead: '关于我是谁、在做什么，以及我如何构建软件',
-      role: '独立开发者',
+      role: '软件开发者',
       summary:
-        '独立开发者，长期活跃于开源与系统向项目，关注 Android 隐私防护、Linux 桌面应用与音频/AI 工具，技术栈覆盖 C++ / Rust / Java / Python / TypeScript',
+        '软件开发者，活跃于开源社区，关注 Android 隐私防护、Linux 桌面应用与音频/AI 工具，技术栈覆盖 Rust / Java / Python / TypeScript / C++',
       highlights: [
         'GitHub @dddqmmx · 公开开源项目',
         'Xposed 隐私与系统模块',
@@ -97,7 +97,7 @@ export const messages: Record<Locale, Messages> = {
     },
     project: {
       title: '项目列表',
-      lead: '精选原创开源项目，覆盖隐私模块、桌面客户端与网络/音频工具',
+      lead: '精选原创开源项目，覆盖隐私模块、桌面程序与网络/音频工具',
       view: '查看项目 →',
       roles: {
         arirang: '隐私防护模块',
@@ -150,15 +150,15 @@ export const messages: Record<Locale, Messages> = {
       primary: 'Primary',
     },
     hero: {
-      tagline: 'Independent Developer',
-      sub: 'Privacy modules · desktop clients · audio & AI tools',
+      tagline: 'Software Developer',
+      sub: 'Privacy modules · desktop applications · audio & AI tools',
     },
     about: {
       title: 'About Me',
       lead: 'Who I am, what I build, and how I approach software',
-      role: 'Independent Developer',
+      role: 'Software Developer',
       summary:
-        'Independent developer active in open-source and systems-oriented work, focused on Android privacy, Linux desktop apps, and audio/AI tools — stack: C++ / Rust / Java / Python / TypeScript',
+        'Software developer active in the open-source community, focused on Android privacy, Linux desktop apps, and audio/AI tools — stack: Rust / Java / Python / TypeScript / C++',
       highlights: [
         'GitHub @dddqmmx · public open-source work',
         'Xposed privacy & system modules',
@@ -170,7 +170,7 @@ export const messages: Record<Locale, Messages> = {
     },
     project: {
       title: 'Projects',
-      lead: 'Selected original open-source projects across privacy modules, desktop clients, and network/audio tools',
+      lead: 'Selected original open-source projects across privacy modules, desktop applications, and network/audio tools',
       view: 'View Project →',
       roles: {
         arirang: 'Privacy defense module',
@@ -225,15 +225,15 @@ export const messages: Record<Locale, Messages> = {
       primary: 'メインナビゲーション',
     },
     hero: {
-      tagline: 'インディペンデント開発者',
-      sub: 'プライバシーモジュール · デスクトップクライアント · 音声 / AI ツール',
+      tagline: 'ソフトウェア開発者',
+      sub: 'プライバシーモジュール · デスクトッププログラム · 音声 / AI ツール',
     },
     about: {
       title: '自己紹介',
       lead: '何者か、何を作っているか、どうソフトウェアを構築しているか',
-      role: 'インディペンデント開発者',
+      role: 'ソフトウェア開発者',
       summary:
-        'オープンソースとシステム寄りの開発に取り組むインディ開発者で、Android のプライバシー保護、Linux デスクトップアプリ、音声/AI ツールに関心があり、技術スタックは C++ / Rust / Java / Python / TypeScript',
+        'オープンソースコミュニティで活動するソフトウェア開発者で、Android のプライバシー保護、Linux デスクトップアプリ、音声/AI ツールに関心があり、技術スタックは Rust / Java / Python / TypeScript / C++',
       highlights: [
         'GitHub @dddqmmx · 公開 OSS プロジェクト',
         'Xposed プライバシー／システムモジュール',
@@ -245,7 +245,7 @@ export const messages: Record<Locale, Messages> = {
     },
     project: {
       title: 'プロジェクト',
-      lead: 'プライバシーモジュール、デスクトップクライアント、ネットワーク/音声ツールを中心に厳選したオリジナル OSS',
+      lead: 'プライバシーモジュール、デスクトッププログラム、ネットワーク/音声ツールを中心に厳選したオリジナル OSS',
       view: 'プロジェクトを見る →',
       roles: {
         arirang: 'プライバシー防御モジュール',

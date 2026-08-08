@@ -286,6 +286,8 @@ onBeforeUnmount(() => document.removeEventListener('pointerdown', handleDocument
 .navTierTop {
   min-height: var(--nav-tier1-h);
   justify-content: space-between;
+  position: relative;
+  z-index: 3;
   background: linear-gradient(180deg, rgba(0, 0, 0, 0.98) 0%, rgba(0, 0, 0, 0.9) 100%);
   backdrop-filter: blur(6px);
 }
@@ -444,10 +446,11 @@ onBeforeUnmount(() => document.removeEventListener('pointerdown', handleDocument
   overflow: hidden;
 }
 
+/* Top-pinned nav: submenu slides down from behind the main nav */
 .submenu-enter-from,
 .submenu-leave-to {
   opacity: 0;
-  transform: translateY(-8px);
+  transform: translateY(calc(-1 * var(--nav-tier1-h)));
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -481,6 +484,7 @@ onBeforeUnmount(() => document.removeEventListener('pointerdown', handleDocument
     order: 0;
   }
 
+  /* Main nav paints above the submenu so it can occlude it while sliding */
   .navTierTop {
     order: 1;
   }
@@ -536,6 +540,12 @@ onBeforeUnmount(() => document.removeEventListener('pointerdown', handleDocument
 
   .languageCaret {
     margin-left: 0.5rem;
+  }
+
+  /* Bottom-pinned nav: submenu slides up from behind the main nav */
+  .submenu-enter-from,
+  .submenu-leave-to {
+    transform: translateY(var(--nav-tier1-h));
   }
 }
 </style>
