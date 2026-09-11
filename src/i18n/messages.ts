@@ -55,6 +55,8 @@ type Messages = {
     lead: string
     back: string
     notFound: string
+    loading: string
+    loadError: string
   }
   contact: {
     title: string
@@ -130,6 +132,8 @@ export const messages: Record<Locale, Messages> = {
       lead: '关于开源、系统开发与设计的记录',
       back: '← 返回博客',
       notFound: '文章不存在',
+      loading: '加载中…',
+      loadError: '博客加载失败',
     },
     contact: {
       title: '联系方式',
@@ -205,6 +209,8 @@ export const messages: Record<Locale, Messages> = {
       lead: 'Notes on open source, systems work, and design',
       back: '← Back to Blog',
       notFound: 'Post not found',
+      loading: 'Loading…',
+      loadError: 'Failed to load blog',
     },
     contact: {
       title: 'Contact',
@@ -280,6 +286,8 @@ export const messages: Record<Locale, Messages> = {
       lead: 'オープンソース、システム開発、デザインについての記録',
       back: '← ブログへ戻る',
       notFound: '記事が見つかりません',
+      loading: '読み込み中…',
+      loadError: 'ブログの読み込みに失敗しました',
     },
     contact: {
       title: '連絡先',

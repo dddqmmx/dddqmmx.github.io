@@ -1,22 +1,60 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { useLocaleStore } from '@/stores/locale'
-import { findPost, formatStamp } from '@/blog/posts'
+import {
+  formatStamp,
+  loadPost,
+  localeToBlogLang,
+  type BlogBlock,
+  type BlogIndexPost,
+} from '@/blog/posts'
 
 const route = useRoute()
 const localeStore = useLocaleStore()
 const { t, locale } = storeToRefs(localeStore)
 
-const post = computed(() => findPost(String(route.params.slug)))
+const post = ref<BlogIndexPost | null>(null)
+const blocks = ref<BlogBlock[]>([])
+const loading = ref(true)
+const failed = ref(false)
+const missing = ref(false)
+
+async function refresh() {
+  loading.value = true
+  failed.value = false
+  missing.value = false
+  try {
+    const loaded = await loadPost(String(route.params.slug), locale.value)
+    if (!loaded) {
+      post.value = null
+      blocks.value = []
+      missing.value = true
+      return
+    }
+    post.value = loaded.meta
+    blocks.value = loaded.blocks
+  } catch {
+    post.value = null
+    blocks.value = []
+    failed.value = true
+  } finally {
+    loading.value = false
+  }
+}
+
+watch([() => route.params.slug, locale], refresh, { immediate: true })
+
 const stamp = computed(() => (post.value ? formatStamp(post.value.date) : null))
-const blocks = computed(() => (post.value ? post.value.body[locale.value] : []))
+const lang = computed(() => localeToBlogLang(locale.value))
 </script>
 
 <template>
   <main class="postPage">
-    <article v-if="post" class="post">
+    <p v-if="loading" class="blogStatus">{{ t.blog.loading }}</p>
+
+    <article v-else-if="post" class="post">
       <RouterLink class="backLink" to="/blog">{{ t.blog.back }}</RouterLink>
 
       <header class="postHead">
@@ -24,10 +62,10 @@ const blocks = computed(() => (post.value ? post.value.body[locale.value] : []))
           <span class="dateStamp"
             >{{ stamp!.ymd }}<span class="dow">{{ stamp!.dow }}</span></span
           >
-          <span class="catChip">{{ post.category[locale] }}</span>
+          <span class="catChip">{{ post.category[lang] }}</span>
         </div>
-        <h1 class="postTitle">{{ post.title[locale] }}</h1>
-        <p class="postExcerpt">{{ post.excerpt[locale] }}</p>
+        <h1 class="postTitle">{{ post.title[lang] }}</h1>
+        <p class="postExcerpt">{{ post.excerpt[lang] }}</p>
       </header>
 
       <div class="postBody">
@@ -48,7 +86,7 @@ const blocks = computed(() => (post.value ? post.value.body[locale.value] : []))
     </article>
 
     <div v-else class="missing">
-      <h1 class="missingText">{{ t.blog.notFound }}</h1>
+      <h1 class="missingText">{{ failed ? t.blog.loadError : t.blog.notFound }}</h1>
       <RouterLink class="backLink" to="/blog">{{ t.blog.back }}</RouterLink>
     </div>
   </main>
@@ -69,9 +107,14 @@ const blocks = computed(() => (post.value ? post.value.body[locale.value] : []))
 }
 
 .post,
-.missing {
+.missing,
+.blogStatus {
   width: min(720px, 90vw);
   margin: 0 auto;
+}
+
+.blogStatus {
+  color: var(--color-f-dim);
 }
 
 .backLink {

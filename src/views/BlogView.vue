@@ -1,22 +1,44 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useLocaleStore } from '@/stores/locale'
-import { formatStamp, sortedPosts } from '@/blog/posts'
+import {
+  fetchBlogIndex,
+  formatStamp,
+  localeToBlogLang,
+  sortedIndexPosts,
+  type BlogIndexPost,
+} from '@/blog/posts'
 
 const localeStore = useLocaleStore()
 const { t, locale } = storeToRefs(localeStore)
 
-const entries = computed(() =>
-  sortedPosts().map((post) => ({
+const posts = ref<BlogIndexPost[]>([])
+const loading = ref(true)
+const failed = ref(false)
+
+onMounted(async () => {
+  try {
+    const index = await fetchBlogIndex()
+    posts.value = sortedIndexPosts(index)
+  } catch {
+    failed.value = true
+  } finally {
+    loading.value = false
+  }
+})
+
+const entries = computed(() => {
+  const lang = localeToBlogLang(locale.value)
+  return posts.value.map((post) => ({
     slug: post.slug,
     stamp: formatStamp(post.date),
-    category: post.category[locale.value],
-    title: post.title[locale.value],
-    excerpt: post.excerpt[locale.value],
-  })),
-)
+    category: post.category[lang],
+    title: post.title[lang],
+    excerpt: post.excerpt[lang],
+  }))
+})
 </script>
 
 <template>
@@ -29,7 +51,10 @@ const entries = computed(() =>
       </div>
     </header>
 
-    <ul class="newsList">
+    <p v-if="loading" class="blogStatus">{{ t.blog.loading }}</p>
+    <p v-else-if="failed" class="blogStatus">{{ t.blog.loadError }}</p>
+
+    <ul v-else class="newsList">
       <li v-for="entry in entries" :key="entry.slug" class="newsRow">
         <RouterLink class="newsLink" :to="`/blog/${entry.slug}`">
           <span class="newsMeta">
@@ -91,6 +116,12 @@ const entries = computed(() =>
   max-width: 40rem;
   color: var(--color-f-dim);
   line-height: 1.7;
+}
+
+.blogStatus {
+  width: min(1120px, 92vw);
+  margin: 0 auto;
+  color: var(--color-f-dim);
 }
 
 .newsList {

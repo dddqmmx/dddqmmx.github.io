@@ -263,7 +263,7 @@ onBeforeUnmount(() => {
   min-height: 100svh;
   background:
     linear-gradient(90deg, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.2) 45%, rgba(0, 0, 0, 0) 70%),
-    url('@/assets/visual_character.png') no-repeat right 0 / auto 100%,
+    url('@/assets/visual_character.webp') no-repeat right 0 / auto 100%,
     url('@/assets/visual_bg.webp') no-repeat center / cover;
 }
 
@@ -585,7 +585,7 @@ onBeforeUnmount(() => {
     padding-bottom: 12vh;
     background:
       linear-gradient(0deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.1) 55%),
-      url('@/assets/visual_character.png') no-repeat 62% 0 / auto 100%,
+      url('@/assets/visual_character_mobile.webp') no-repeat 62% 0 / auto 100%,
       url('@/assets/visual_bg.webp') no-repeat center / cover;
   }
 
